@@ -20,8 +20,8 @@ jobs:
       - name: Check Lambda Function Existence
         id: check_lambda1_existence
         run: |
-          aws lambda get-function --function-name lambda1 || echo "Function does not exist"
-          echo "function-create=yes" >> "$GITHUB_OUTPUT"
+          echo "function-create=no" >> "$GITHUB_OUTPUT"
+          aws lambda get-function --function-name lambda1 || echo "function-create=yes" >> "$GITHUB_OUTPUT"
         # outputs:
         #   function-create: ${{ steps.check_lambda1_existence.outputs.function-create }}  
       # Create lambda1 function if it doesn't exist
