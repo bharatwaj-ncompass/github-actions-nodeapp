@@ -2,7 +2,7 @@ exports.handler = async (event) => {
     console.log("This is a test lambda");
     const response = {
         statusCode: 200,
-        body: JSON.stringify('Lambda retun something'),
+        body: JSON.stringify('Lambda return something..'),
       };
     return response;
 }
