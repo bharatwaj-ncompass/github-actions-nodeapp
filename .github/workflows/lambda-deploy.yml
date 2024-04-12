@@ -21,9 +21,14 @@ jobs:
         id: check_lambda1_existence
         run: |
           aws lambda get-function --function-name lambda1 || echo "Function does not exist"
+          echo "function-create=yes" >> "$GITHUB_OUTPUT"
+        outputs:
+          function-create: ${{ steps.check_lambda1_existence.outputs.function-create }}  
       # Create lambda1 function if it doesn't exist
       - name: Create Lambda Function
-        if: steps.check_lambda1_existence.outputs.stdout == 'Function does not exist'
+        needs: check_lambda1_existence
+        # if: steps.check_lambda1_existence.outputs.stdout == 'Function does not exist'
+        if: ${{ steps.check_lambda1_existence.outputs.function-create == 'yes' }}
         run: |
           echo "Creating lambda"
           aws lambda create-function \
@@ -36,7 +41,8 @@ jobs:
           echo "Moving to next step post creation of lamdba"
       # Update lambda1 function code
       - name: Update Lambda Function Code
-        if: steps.check_lambda1_existence.outputs.stdout != 'Function does not exist'
+        needs: check_lambda1_existence
+        if: ${{ steps.check_lambda1_existence.outputs.function-create != 'yes' }}
         run: |
           zip -j lambda1.zip ./src/index.js
           aws lambda update-function-code --function-name=lambda1 --zip-file=fileb://lambda1.zip
