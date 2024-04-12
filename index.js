@@ -6,7 +6,7 @@ app.get("/", (req, res, next) => {
    });
 
 app.get("/players", (req, res, next) => {
-    res.json(["Jokic", "Luka", "SGA"]);
+    res.json(["Joker", "Luka", "SGA"]);
    });
 
 app.get("/nouns", (req, res, next) => {
