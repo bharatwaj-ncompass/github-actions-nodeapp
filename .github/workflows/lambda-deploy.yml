@@ -31,6 +31,8 @@ jobs:
             --handler index.handler \
             --zip-file fileb://lambda1.zip \
             --role arn:aws:iam::368355641188:role/temp-lambda-role
+          sleep 2
+          echo "Moving to next step post creation of lamdba"
       # Update lambda1 function code
       - name: Update Lambda Function Code
         if: steps.check_lambda1_existence.outputs.stdout != 'Function does not exist'
