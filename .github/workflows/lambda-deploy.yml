@@ -31,6 +31,7 @@ jobs:
         if: ${{ steps.check_lambda1_existence.outputs.function-create == 'yes' }}
         run: |
           echo "Creating lambda"
+          zip -j lambda1.zip ./src/index.js
           aws lambda create-function \
             --function-name lambda1 \
             --runtime nodejs18.x \
