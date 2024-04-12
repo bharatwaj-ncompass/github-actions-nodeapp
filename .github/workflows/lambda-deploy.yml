@@ -25,6 +25,7 @@ jobs:
       - name: Create Lambda Function
         if: steps.check_lambda1_existence.outputs.stdout == 'Function does not exist'
         run: |
+          echo "Creating lambda"
           aws lambda create-function \
             --function-name lambda1 \
             --runtime nodejs18.x \
