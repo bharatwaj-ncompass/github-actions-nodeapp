@@ -1,0 +1,39 @@
+name: Deploying Lambda
+on:
+  push:
+    branches:
+      - main
+jobs:
+  lambda1:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      # Check if lambda1 function exists
+      - name: Check Lambda Function Existence
+        id: check_lambda1_existence
+        run: |
+          aws lambda get-function --function-name lambda1 || echo "Function does not exist"
+      # Create lambda1 function if it doesn't exist
+      - name: Create Lambda Function
+        if: steps.check_lambda1_existence.outputs.stdout == 'Function does not exist'
+        run: |
+          aws lambda create-function \
+            --function-name lambda1 \
+            --runtime nodejs18.x \
+            --handler index.handler \
+            --zip-file fileb://lambda1.zip \
+            --role arn:aws:iam::368355641188:role/temp-lambda-role
+      # Update lambda1 function code
+      - name: Update Lambda Function Code
+        if: steps.check_lambda1_existence.outputs.stdout != 'Function does not exist'
+        run: |
+          zip -j lambda1.zip ./src/index.js
+          aws lambda update-function-code --function-name=lambda1 --zip-file=fileb://lambda1.zip
